@@ -1,0 +1,62 @@
+enum WorkArrangement {
+    Remote
+    Onsite
+    Hybrid
+}
+
+model Internship {
+    fields {
+        title Text
+        description Text
+        startDate Timestamp
+        endDate Timestamp
+        stipendMin Number
+        stipendMax Number
+        workArrangement WorkArrangement
+    }
+}
+
+model Company {
+    fields {
+        name Text
+        description Text
+        industry Text
+        website Text
+        logoUrl Text
+    }
+}
+
+model CompanyMembership {
+    fields {
+        user User
+        company Company
+    }
+}
+
+model User {
+    fields {
+        identity Identity
+        name Text
+        email Text
+        profilePictureUrl Text
+        ghUrl Text
+        lkdnUrl Text
+        xurl Text
+    }
+}
+
+model Student {
+    fields {
+        identity Identity
+        user User
+    }
+}
+
+model School {
+    fields {
+        name Text
+        description Text
+        website Text
+        logoUrl Text
+    }
+}
