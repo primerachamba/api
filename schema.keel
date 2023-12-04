@@ -35,28 +35,79 @@ model CompanyMembership {
 
 model User {
     fields {
-        identity Identity
+        handle Text @unique
+        identity Identity @unique
         name Text
         email Text
-        profilePictureUrl Text
-        ghUrl Text
-        lkdnUrl Text
-        xurl Text
+        profilePictureUrl Text?
+        ghUrl Text?
+        lkdnUrl Text?
+        xurl Text?
     }
+
+    actions {
+        get me() {
+            @where(user.identity == ctx.identity)
+        }
+        list listUsers() {
+            @where(user.identity == ctx.identity)
+        }
+        delete deleteUser(id)
+        create createUser() with (name, email, handle) {
+            @set(user.identity = ctx.identity)
+            @permission(expression: ctx.isAuthenticated)
+        }
+        update updateUser(id) with (
+            name?,
+            email?,
+            handle?,
+            profilePictureUrl?,
+            ghUrl?,
+            lkdnUrl?,
+            xurl?,
+        )
+    }
+
+    @permission(
+        actions: [get, update, delete],
+        expression: user.identity == ctx.identity
+    )
 }
 
 model Student {
     fields {
-        identity Identity
         user User
+        school School
+    }
+
+    actions {
+        create createStudent() with (user.id, school.id) {
+            @permission(expression: ctx.isAuthenticated)
+        }
     }
 }
 
 model School {
     fields {
         name Text
+        handle Text @unique
         description Text
-        website Text
-        logoUrl Text
+        website Text?
+        logoUrl Text?
     }
+
+    actions {
+        create createSchool() with (name, handle, description, website?, logoUrl?) {
+            @permission(expression: ctx.isAuthenticated)
+        }
+        get getSchool(id)
+        list listSchools()
+        delete deleteSchool(id)
+        update updateSchool(id) with (name?, description?, website?, logoUrl?)
+    }
+
+    @permission(
+        actions: [get, update, delete],
+        expression: ctx.isAuthenticated
+    )
 }
